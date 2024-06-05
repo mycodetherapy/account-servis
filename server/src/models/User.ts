@@ -1,5 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import { UnauthorizedError } from "../errors/UnauthorizedError";
 
 interface IUser extends Document {
   name: string;
@@ -30,12 +31,13 @@ userSchema.statics.findUserByCredentials = async function (
   const user = await this.findOne({ email }).select("+password");
 
   if (!user) {
-    throw new Error("Неправильный email или пароль");
+    throw new UnauthorizedError("Неправильный email или пароль");
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  
   if (!isPasswordCorrect) {
-    throw new Error("Неправильный email или пароль");
+    throw new UnauthorizedError("Неправильный email или пароль");
   }
 
   return user;

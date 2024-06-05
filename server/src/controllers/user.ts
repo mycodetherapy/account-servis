@@ -1,19 +1,25 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
 import { readAndConvertFileToBuffer } from "../utils/utils";
+import errors from "../errors/index";
+const { NotFoundError, DuplicateEmailError } = errors;
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, email, password, birthDate, gender } = req.body;
   const profilePhoto = req.file?.path;
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "Пользователь с таким email уже существует" });
+      throw new DuplicateEmailError(
+        "Пользователь с таким email уже существует"
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -35,29 +41,21 @@ export const register = async (req: Request, res: Response) => {
       { expiresIn: "1h" }
     );
 
-    res.status(201).json({ result: newUser, token });
+    res.status(200).json({ result: newUser, token });
   } catch (error) {
-    res.status(500).json({ message: "Ошибка сервера" });
+    next(error);
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email, password } = req.body;
 
   try {
     const existingUser = await User.findUserByCredentials(email, password);
-
-    if (!existingUser) {
-      return res.status(404).json({ message: "Пользователь не найден" });
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
-    if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Неверный пароль" });
-    }
 
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id },
@@ -67,11 +65,15 @@ export const login = async (req: Request, res: Response) => {
 
     res.status(200).json({ result: existingUser, token });
   } catch (error) {
-    res.status(500).json({ message: "Ошибка сервера" });
+    next(error);
   }
 };
 
-export const editUser = async (req: Request, res: Response) => {
+export const editUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const { name, password } = req.body;
   const profilePhoto = req.file?.path;
@@ -80,7 +82,7 @@ export const editUser = async (req: Request, res: Response) => {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "Пользователь не найден" });
+      throw new NotFoundError("Пользователь не найден.");
     }
 
     if (name) user.name = name;
@@ -100,15 +102,19 @@ export const editUser = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Профиль успешно обновлен" });
   } catch (error) {
-    res.status(500).json({ message: "Ошибка сервера" });
+    next(error);
   }
 };
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const users = await User.find({}, "profilePhoto name birthDate");
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: "Ошибка сервера" });
+    next(error);
   }
 };
