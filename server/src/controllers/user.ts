@@ -114,3 +114,7 @@ export const getUsers = async (
   }
 };
 
+export const checkToken = (req: Request, res: Response) => {
+  res.status(200).json({ message: "Token is valid" });
+};
+

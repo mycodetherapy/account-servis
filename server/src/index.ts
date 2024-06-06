@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user";
 import path from "path";
-import { login, register } from "./controllers/user";
+import { checkToken, login, register } from "./controllers/user";
 import { auth } from "./middleware/auth";
 import { NotFoundError } from "./errors/NotFoundError";
 import upload from "./middleware/upload";
@@ -35,7 +35,9 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/signup', upload.single('profilePhoto'), register);
 app.post('/signin', login);
 //app.use(auth);
+app.get("/api/checkToken", checkToken);
 app.use("/api/account", userRoutes);
+app.use("/api/account/:id", userRoutes);
 app.use("/api/people", userRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 

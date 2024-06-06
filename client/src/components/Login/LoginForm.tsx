@@ -1,9 +1,10 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import axios from "axios";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { LoginFormData } from "../../types/types";
 import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/system";
 
 interface LoginFormProps {
   login: () => void;
@@ -16,8 +17,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({login}) => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await axios.post("http://localhost:5000/signin", data);
-      console.log(response.data);
-      localStorage.setItem('token', response.data.token); // Сохранение токена в localStorage
+      console.log(response.data.result._id);
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.result._id);
       login();
       navigate('/users');
     } catch (error) {

@@ -48,6 +48,7 @@ export const UsersPage: React.FC = () => {
               />
             </ListItemAvatar>
             <ListItemText primary={user.name} />
+            <ListItemText primary={user.birthDate} />
           </ListItem>
         ))}
       </List>

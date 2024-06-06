@@ -11,7 +11,7 @@ interface LoginPageProps {
   return (
     <div>
       <h1>Login</h1>
-      <LoginForm login={onLogin}/>
+      <LoginForm login={onLogin} />
       <p>
         Don't have an account? <Link to="/register">Sign up</Link>
       </p>
