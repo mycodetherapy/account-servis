@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import {
   Container,
   Typography,
-  List,
-  ListItem,
   ListItemText,
-  ListItemAvatar,
   Avatar,
+  Grid,
 } from "@mui/material";
 import { User } from "../../types/types";
+import moment from "moment";
+import { Box } from "@mui/system";
 
 export const UsersPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -17,13 +17,13 @@ export const UsersPage: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem('token'); 
+        const token = localStorage.getItem("token");
         if (!token) throw new Error("Необходима авторизация");
 
         const response = await axios.get("http://localhost:5000/api/people", {
           headers: {
-            Authorization: `Bearer ${token}` 
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setUsers(response.data);
       } catch (error) {
@@ -35,23 +35,49 @@ export const UsersPage: React.FC = () => {
   }, []);
 
   return (
-    <Container>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container
+      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        sx={{ marginTop: 2 }}
+      >
         User List
       </Typography>
-      <List>
-        {users.map((user, index) => (
-          <ListItem key={user._id}>
-            <ListItemAvatar>
+      <Grid container spacing={3} sx={{ maxWidth: "1200px" }}>
+        {users.map((user) => (
+          <Grid item xs={12} sm={6} md={4} key={user._id}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: 3,
+                backgroundColor: "#F0F8FF",
+                border: "1px solid gray",
+                height: "100%",
+                boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)",
+              }}
+            >
               <Avatar
-                src={user.profilePhoto ? `http://localhost:5000/${user.profilePhoto}` : ""}
+                src={
+                  user.profilePhoto
+                    ? `http://localhost:5000/${user.profilePhoto}`
+                    : ""
+                }
+                sx={{ width: 200, height: 200, margin: 3 }}
               />
-            </ListItemAvatar>
-            <ListItemText primary={user.name} />
-            <ListItemText primary={user.birthDate} />
-          </ListItem>
+              <ListItemText primary={user.name} sx={{ textAlign: "center" }} />
+              <ListItemText
+                primary={moment(user.birthDate).format("DD.MM.YYYY")}
+                sx={{ textAlign: "center", paddingBottom: 2 }}
+              />
+            </Box>
+          </Grid>
         ))}
-      </List>
+      </Grid>
     </Container>
   );
 };

@@ -32,11 +32,11 @@ export const App: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     setIsAuthenticated(false);
   };
 
   useLayoutEffect(() => {
-    
     const checkToken = async () => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -92,6 +92,9 @@ export const App: React.FC = () => {
           </Typography>
           {isAuthenticated && (
             <>
+              <Button color="inherit" component={Link} to="/people">
+                Go to the list
+              </Button>
               <Button color="inherit" component={Link} to="/account">
                 Edit Profile
               </Button>
@@ -106,7 +109,7 @@ export const App: React.FC = () => {
         <Routes>
           <Route
             path="/"
-            element={<Navigate to={isAuthenticated ? "/users" : "/login"} />}
+            element={<Navigate to={isAuthenticated ? "/people" : "/login"} />}
           />
           <Route
             path="/login"
@@ -114,13 +117,13 @@ export const App: React.FC = () => {
               isAuthenticated ? (
                 <UsersPage />
               ) : (
-                <LoginPage onLogin={handleLogin} />
+                <LoginPage login={handleLogin} />
               )
             }
           />
           <Route path="/register" element={<RegisterPage />} />
           <Route
-            path="/users"
+            path="/people"
             element={isAuthenticated ? <UsersPage /> : <Navigate to="/login" />}
           />
           <Route
