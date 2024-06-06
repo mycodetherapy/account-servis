@@ -4,7 +4,9 @@ import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
 import { readAndConvertFileToBuffer } from "../utils/utils";
 import errors from "../errors/index";
-const { NotFoundError, DuplicateEmailError } = errors;
+//import { DuplicateEmailError } from "errors/DuplicateEmailError";
+//import { NotFoundError } from "errors/NotFoundError";
+ const { NotFoundError, DuplicateEmailError } = errors;
 
 export const register = async (
   req: Request,
@@ -12,8 +14,8 @@ export const register = async (
   next: NextFunction
 ) => {
   const { name, email, password, birthDate, gender } = req.body;
-  const profilePhoto = req.file?.path;
-
+  const profilePhoto = req.file ? `uploads/${req.file.filename}` : null; 
+  
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -76,7 +78,7 @@ export const editUser = async (
 ) => {
   const { id } = req.params;
   const { name, password } = req.body;
-  const profilePhoto = req.file?.path;
+  const profilePhoto = req.file ? `uploads/${req.file.filename}` : null;
 
   try {
     const user = await User.findById(id);
@@ -88,14 +90,7 @@ export const editUser = async (
     if (name) user.name = name;
     if (password) user.password = await bcrypt.hash(password, 12);
     if (profilePhoto) {
-      try {
-        const profilePhotoBuffer = await readAndConvertFileToBuffer(
-          profilePhoto
-        );
-        user.profilePhoto = profilePhotoBuffer;
-      } catch (error) {
-        console.error(`Ошибка при обработке файла: ${""}`);
-      }
+        user.profilePhoto = profilePhoto;
     }
 
     await user.save();
@@ -118,3 +113,4 @@ export const getUsers = async (
     next(error);
   }
 };
+

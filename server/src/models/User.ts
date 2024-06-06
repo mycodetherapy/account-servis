@@ -8,7 +8,7 @@ interface IUser extends Document {
   password: string;
   birthDate: Date;
   gender: string;
-  profilePhoto: Buffer;
+  profilePhoto: string;
 }
 
 interface IUserModel extends Model<IUser> {
@@ -21,7 +21,7 @@ const userSchema: Schema<IUser> = new Schema({
   password: { type: String, required: true, select: false },
   birthDate: { type: Date, required: true },
   gender: { type: String, required: true },
-  profilePhoto: { type: Buffer, required: true },
+  profilePhoto: { type: String, required: true },
 });
 
 userSchema.statics.findUserByCredentials = async function (

@@ -6,9 +6,8 @@ const router = express.Router();
 
 router.post('/account/register', upload.single('profilePhoto'), register);
 router.post('/account/login', login);
-router.patch('/account/:id', upload.single('profilePhoto'), editUser);
-
-router.get('/people', getUsers);
+router.patch('/:id', upload.single('profilePhoto'), editUser);
+router.get('/', getUsers);
 
 export default router;
 
