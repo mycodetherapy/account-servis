@@ -31,13 +31,13 @@ userSchema.statics.findUserByCredentials = async function (
   const user = await this.findOne({ email }).select("+password");
 
   if (!user) {
-    throw new UnauthorizedError("Неправильный email или пароль");
+    throw new UnauthorizedError("Incorrect email or password.");
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
   
   if (!isPasswordCorrect) {
-    throw new UnauthorizedError("Неправильный email или пароль");
+    throw new UnauthorizedError("Incorrect email or password.");
   }
 
   return user;

@@ -2,10 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
-import { readAndConvertFileToBuffer } from "../utils/utils";
 import errors from "../errors/index";
-//import { DuplicateEmailError } from "errors/DuplicateEmailError";
-//import { NotFoundError } from "errors/NotFoundError";
+
  const { NotFoundError, DuplicateEmailError } = errors;
 
 export const register = async (
@@ -20,7 +18,7 @@ export const register = async (
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       throw new DuplicateEmailError(
-        "Пользователь с таким email уже существует"
+        "A user with this email already exists."
       );
     }
 
@@ -84,7 +82,7 @@ export const editUser = async (
     const user = await User.findById(id);
 
     if (!user) {
-      throw new NotFoundError("Пользователь не найден.");
+      throw new NotFoundError("The user was not found.");
     }
 
     if (name) user.name = name;
@@ -95,7 +93,7 @@ export const editUser = async (
 
     await user.save();
 
-    res.status(200).json({ message: "Профиль успешно обновлен" });
+    res.status(200).json({ message: "The profile has been successfully updated" });
   } catch (error) {
     next(error);
   }

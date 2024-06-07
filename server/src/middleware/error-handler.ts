@@ -7,7 +7,7 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   const statusCode = err.statusCode || 500;
-  const message = err.message || "На сервере произошла ошибка.";
+  const message = err.message || "Server error.";
   res.status(statusCode).send({ message });
 
   next();
