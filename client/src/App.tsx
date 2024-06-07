@@ -21,6 +21,7 @@ import { LoginPage } from "./components/Login/LoginPage";
 import axios from "axios";
 import { Box } from "@mui/system";
 import { EditProfilePage } from "./components/Profile/EditProfilePage";
+import { HOST_NAME } from "./constants";
 
 export const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,7 +44,7 @@ export const App: React.FC = () => {
         setIsLoading(true);
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/checkToken",
+            `${HOST_NAME}/api/checkToken`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

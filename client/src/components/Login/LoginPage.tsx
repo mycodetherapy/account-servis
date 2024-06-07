@@ -4,6 +4,7 @@ import { TextField, Button, Box, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { LoginFormData } from "../../types/types";
 import { Link, useNavigate } from "react-router-dom";
+import { HOST_NAME } from "../../constants";
 
 interface LoginFormProps {
   login: () => void;
@@ -15,7 +16,7 @@ export const LoginPage: React.FC<LoginFormProps> = ({ login }) => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await axios.post("http://localhost:5000/signin", data);
+      const response = await axios.post(`${HOST_NAME}/signin`, data);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userId", response.data.result._id);
       login();

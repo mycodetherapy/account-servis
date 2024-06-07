@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { EditProfile, User } from "../../types/types";
 import { grey } from "@mui/material/colors";
+import { HOST_NAME } from "../../constants";
 
 export const EditProfilePage: React.FC = () => {
   const { register, handleSubmit, setValue } = useForm<EditProfile>();
@@ -23,7 +24,7 @@ export const EditProfilePage: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/account/${userId}`,
+          `${HOST_NAME}/api/account/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -34,7 +35,7 @@ export const EditProfilePage: React.FC = () => {
         const userData = response.data.find(
           (data: User) => data._id === userId
         );
-        setProfilePhoto(`http://localhost:5000/${userData.profilePhoto}`);
+        setProfilePhoto(`${HOST_NAME}/${userData.profilePhoto}`);
 
         setValue("name", userData.name);
       } catch (error) {
@@ -60,7 +61,7 @@ export const EditProfilePage: React.FC = () => {
     }
     try {
       const response = await axios.patch(
-        `http://localhost:5000/api/account/${userId}`,
+        `${HOST_NAME}/api/account/${userId}`,
         formData,
         {
           headers: {

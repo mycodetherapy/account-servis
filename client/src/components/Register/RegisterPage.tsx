@@ -16,6 +16,7 @@ import axios from "axios";
 import { RegisterFormData } from "../../types/types";
 import { Link, useNavigate } from "react-router-dom";
 import defaultPhotoUrl from "../../images/defaultPhoto.jpg";
+import { HOST_NAME } from "../../constants";
 
 export const RegisterPage: React.FC = () => {
   const {
@@ -41,12 +42,12 @@ export const RegisterPage: React.FC = () => {
         const blob = await response.blob();
         formData.append("profilePhoto", blob, "default-photo.jpg");
       } catch (error) {
-        console.error("Ошибка при загрузке фото по умолчанию:", error);
+        console.error("Error when uploading the default photo:", error);
       }
     }
     try {
       const response = await axios.post(
-        "http://localhost:5000/signup",
+        `${HOST_NAME}/signup`,
         formData
       );
       navigate("/login");

@@ -10,6 +10,7 @@ import {
 import { User } from "../../types/types";
 import moment from "moment";
 import { Box } from "@mui/system";
+import { HOST_NAME } from "../../constants";
 
 export const UsersPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -18,9 +19,9 @@ export const UsersPage: React.FC = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) throw new Error("Необходима авторизация");
+        if (!token) throw new Error("Authorization is required.");
 
-        const response = await axios.get("http://localhost:5000/api/people", {
+        const response = await axios.get(`${HOST_NAME}/api/people`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -64,7 +65,7 @@ export const UsersPage: React.FC = () => {
               <Avatar
                 src={
                   user.profilePhoto
-                    ? `http://localhost:5000/${user.profilePhoto}`
+                    ? `${HOST_NAME}/${user.profilePhoto}`
                     : ""
                 }
                 sx={{ width: 200, height: 200, margin: 3 }}
