@@ -1,35 +1,33 @@
 import { Joi, celebrate } from "celebrate";
-import validator from "validator";
+import { isPath } from "../utils/utils";
 
 export const validateRegisterBody = celebrate({
   body: Joi.object().keys({
     password: Joi.string().min(4).max(30).required().messages({
-      'string.min': 'Minimum field length is 4 characters.',
-      'string.max': 'Maximum field length is 30 characters.',
-      'any.required': 'Field is required.',
+      "string.min": "Minimum field length is 4 characters.",
+      "string.max": "Maximum field length is 30 characters.",
     }),
     email: Joi.string().required().email().messages({
-      'any.required': 'Field is required.',
-      'string.email': 'Field must contain an email address.',
+      "string.email": "Field must contain an email address.",
     }),
-    name: Joi.string().min(2).max(30).messages({
-      'string.min': 'Minimum field length is 2 characters.',
-      'string.max': 'Maximum field length is 30 characters.',
+    name: Joi.string().min(2).max(30).required().messages({
+      "string.min": "Minimum field length is 2 characters.",
+      "string.max": "Maximum field length is 30 characters.",
     }),
     birthDate: Joi.date().iso().required().messages({
-        'any.required': 'Field is required.',
-        'date.iso': ' Field must contain the date in ISO format.',
-      }),
+      "date.iso": " Field must contain the date in ISO format.",
+    }),
     gender: Joi.string().valid("male", "female", "other").required().messages({
-        'any.required': 'Field is required.',
-        'any.only': 'Gender field must be one of the values: male, female, other.',
-      }),
-    avatar: Joi.string().custom((value, helpers) => {
-      if (validator.isURL(value)) {
-        return value;
+      "any.only":
+        "Gender field must be one of the values: male, female, other.",
+    }),
+    profilePhoto: Joi.string().custom((value, helpers) => {
+      if (!isPath(value)) {
+        return helpers.error('any.invalid');
       }
+      return value;
     }).messages({
-      'any.custom': 'Field must contain a link',
+      'any.invalid': 'The field must contain a valid path.',
     }),
   }),
 });

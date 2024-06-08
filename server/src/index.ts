@@ -10,7 +10,8 @@ import upload from "./middleware/upload";
 import { errorHandler } from "./middleware/error-handler";
 import cors from "cors";
 import { logger } from "./middleware/logger";
-import { validateRegisterBody } from "./validation/validateRegisterBody";
+import { errors } from "celebrate";
+import { validateLoginBody, validateRegisterBody } from "./validation";
 
 dotenv.config();
 
@@ -35,8 +36,8 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/signup", upload.single("profilePhoto"), register);
-app.post("/signin", login);
+app.post("/signup", upload.single("profilePhoto"), validateRegisterBody, register);
+app.post("/signin", validateLoginBody, login);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use(auth);
 app.get("/api/checkToken", checkToken);
@@ -48,4 +49,5 @@ app.use((req, res, next) => {
   next(new NotFoundError("The route does not exist."));
 });
 
+app.use(errors());
 app.use(errorHandler);
