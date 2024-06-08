@@ -1,6 +1,11 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import axios from "axios";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { LoginFormData } from "../../types/types";
 import { Link, useNavigate } from "react-router-dom";
@@ -33,23 +38,31 @@ export const LoginPage: React.FC<LoginFormProps> = ({ login }) => {
       <Typography variant="h4" gutterBottom sx={{ marginTop: 2 }}>
         Login
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ textAlign: "center", minWidth: 300 }}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ textAlign: "center", maxWidth: 300 }}
+      >
         <TextField
           label="Email"
           type="email"
-          {...register("email")}
+          {...register("email", { required: true})}
           fullWidth
-          sx={{ marginBottom: 2 }}
+          sx={{ marginBottom: 2}}
         />
-        <br />
+
         <TextField
           label="Password"
           type="password"
-          {...register("password")}
+          {...register("password", { required: true })}
           fullWidth
         />
-        <br />
-        <Button type="submit" variant="contained" color="primary" sx={{ margin: 2 }}>
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ margin: 2 }}
+        >
           Login
         </Button>
       </form>

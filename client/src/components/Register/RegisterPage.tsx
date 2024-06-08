@@ -80,19 +80,19 @@ export const RegisterPage: React.FC = () => {
             gap: 2,
           }}
         >
-          <TextField label="Name" {...register("name")} fullWidth />
+          <TextField label="Name" {...register("name", { required: true})} fullWidth />
 
           <TextField
             label="Email"
             type="email"
-            {...register("email")}
+            {...register("email", { required: true})}
             fullWidth
           />
 
           <TextField
             label="Password"
             type="password"
-            {...register("password")}
+            {...register("password", { required: true })}
             fullWidth
           />
 
@@ -103,7 +103,7 @@ export const RegisterPage: React.FC = () => {
             <TextField
               id="birthDate"
               type="date"
-              {...register("birthDate")}
+              {...register("birthDate", { required: true })}
               fullWidth
               InputLabelProps={{ shrink: true }}
               inputProps={{ placeholder: "" }}
@@ -112,7 +112,7 @@ export const RegisterPage: React.FC = () => {
 
           <FormControl fullWidth>
             <InputLabel>Gender</InputLabel>
-            <Select {...register("gender")}>
+            <Select {...register("gender", { required: true })}>
               <MenuItem value="male">Male</MenuItem>
               <MenuItem value="female">Female</MenuItem>
               <MenuItem value="other">Other</MenuItem>

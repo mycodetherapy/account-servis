@@ -68,7 +68,7 @@ export const UsersPage: React.FC = () => {
                     ? `${HOST_NAME}/${user.profilePhoto}`
                     : ""
                 }
-                sx={{ width: 200, height: 200, margin: 3 }}
+                sx={{ width: 200, height: 200, marginTop: 5, marginBottom: 2 }}
               />
               <ListItemText primary={user.name} sx={{ textAlign: "center" }} />
               <ListItemText
