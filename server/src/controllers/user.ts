@@ -2,9 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
-import errors from "../errors/index";
-
- const { NotFoundError, DuplicateEmailError } = errors;
+import { DuplicateEmailError, NotFoundError } from "../errors/index";
 
 export const register = async (
   req: Request,

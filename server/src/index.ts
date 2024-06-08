@@ -5,7 +5,7 @@ import userRoutes from "./routes/user";
 import path from "path";
 import { checkToken, login, register } from "./controllers/user";
 import { auth } from "./middleware/auth";
-import { NotFoundError } from "./errors/NotFoundError";
+import { NotFoundError } from "./errors/index";
 import upload from "./middleware/upload";
 import { errorHandler } from "./middleware/error-handler";
 import cors from "cors";

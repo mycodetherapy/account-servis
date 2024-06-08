@@ -1,7 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import { UnauthorizedError } from "../errors/UnauthorizedError";
-import validator from "validator";
+import { UnauthorizedError } from "../errors/index";
 import { isPath } from "../utils/utils";
 
 interface IUser extends Document {

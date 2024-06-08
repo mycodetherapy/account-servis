@@ -1,7 +1,7 @@
 // src/middleware/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { UnauthorizedError } from '../errors/UnauthorizedError';
+import { UnauthorizedError } from '../errors/index';
 import { IUserAuthInfoRequest } from '../types/express';
 
 interface JwtPayload {
