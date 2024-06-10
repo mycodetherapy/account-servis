@@ -8,22 +8,22 @@ import {
   Grid,
   Pagination,
 } from "@mui/material";
-import { User } from "../../types/types";
+import { PaginatedUsersResponse, UserBase } from '../../types/types';
 import moment from "moment";
 import { Box } from "@mui/system";
 import { CARD_LIMIT, HOST_NAME } from "../../constants";
 
 export const UsersPage: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [users, setUsers] = useState<UserBase[]>([]);
+  const [currentPage, setCurrentPage] = useState<PaginatedUsersResponse['currentPage']>(1);
+  const [totalPages, setTotalPages] = useState<PaginatedUsersResponse['totalPages']>(1);
 
   const fetchUsers = async (page: number) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Authorization is required.");
 
-      const response = await axios.get(
+      const response = await axios.get<PaginatedUsersResponse>(
         `${HOST_NAME}/api/people?page=${page}&limit=${CARD_LIMIT}`,
         {
           headers: {

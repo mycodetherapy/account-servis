@@ -2,18 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import {
-  TextField,
-  Button,
-  Box,
-  Avatar,
-  Typography,
-} from "@mui/material";
-import { EditProfile } from "../../types/types";
+import { TextField, Button, Box, Avatar, Typography } from "@mui/material";
+import { EditProfileFormData, UserProfile } from "../../types/types";
 import { HOST_NAME } from "../../constants";
 
 export const EditProfilePage: React.FC = () => {
-  const { register, handleSubmit, setValue } = useForm<EditProfile>();
+  const { register, handleSubmit, setValue } = useForm<EditProfileFormData>();
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
@@ -22,7 +16,7 @@ export const EditProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.get<UserProfile>(
           `${HOST_NAME}/api/account/${userId}`,
           {
             headers: {
@@ -30,21 +24,22 @@ export const EditProfilePage: React.FC = () => {
             },
           }
         );
-        const userData = response.data
+        const userData = response.data;
         setProfilePhoto(`${HOST_NAME}/${userData.profilePhoto}`);
         setValue("name", userData.name);
       } catch (error) {
         console.error(error);
-      } 
+      }
     };
 
     fetchUserData();
   }, [userId, setValue]);
 
-  const onSubmit = async (data: EditProfile) => {
+  const onSubmit = async (data: EditProfileFormData) => {
     const formData = new FormData();
-    
-    formData.append("name", data.name);
+    if (data.name) {
+      formData.append("name", data.name);
+    }
     if (data.profilePhoto?.[0]) {
       formData.append("profilePhoto", data.profilePhoto[0]);
     }
