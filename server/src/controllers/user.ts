@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/User";
 import { DuplicateEmailError, NotFoundError } from "../errors/index";
+import { CARD_LIMIT } from "../../constants";
 
 export const register = async (
   req: Request,
@@ -10,14 +11,12 @@ export const register = async (
   next: NextFunction
 ) => {
   const { name, email, password, birthDate, gender } = req.body;
-  const profilePhoto = req.file ? `uploads/${req.file.filename}` : null; 
-  
+  const profilePhoto = req.file ? `uploads/${req.file.filename}` : null;
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw new DuplicateEmailError(
-        "A user with this email already exists."
-      );
+      throw new DuplicateEmailError("A user with this email already exists.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -86,12 +85,14 @@ export const editUser = async (
     if (name) user.name = name;
     if (password) user.password = await bcrypt.hash(password, 12);
     if (profilePhoto) {
-        user.profilePhoto = profilePhoto;
+      user.profilePhoto = profilePhoto;
     }
 
     await user.save();
 
-    res.status(200).json({ message: "The profile has been successfully updated" });
+    res
+      .status(200)
+      .json({ message: "The profile has been successfully updated" });
   } catch (error) {
     next(error);
   }
@@ -102,9 +103,16 @@ export const getUsers = async (
   res: Response,
   next: NextFunction
 ) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || CARD_LIMIT;
+  const skip = (page - 1) * limit;
   try {
-    const users = await User.find({}, "profilePhoto name birthDate");
-    res.status(200).json(users);
+    const users = await User.find({}, "profilePhoto name birthDate")
+      .skip(skip)
+      .limit(limit);
+    const totalUsers = await User.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+    res.status(200).json({ users, totalPages, currentPage: page });
   } catch (error) {
     next(error);
   }
@@ -114,3 +122,22 @@ export const checkToken = (req: Request, res: Response) => {
   res.status(200).json({ message: "Token is valid" });
 };
 
+export const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id, "profilePhoto name");
+
+    if (!user) {
+      throw new NotFoundError("The user was not found.");
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};

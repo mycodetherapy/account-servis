@@ -42,7 +42,6 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use(auth);
 app.get("/api/checkToken", checkToken);
 app.use("/api/account", userRoutes);
-app.use("/api/account/:id", userRoutes);
 app.use("/api/people", upload.single("profilePhoto"), userRoutes);
 
 app.use((req, res, next) => {

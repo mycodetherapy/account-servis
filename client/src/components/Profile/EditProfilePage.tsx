@@ -9,8 +9,7 @@ import {
   Avatar,
   Typography,
 } from "@mui/material";
-import { EditProfile, User } from "../../types/types";
-import { grey } from "@mui/material/colors";
+import { EditProfile } from "../../types/types";
 import { HOST_NAME } from "../../constants";
 
 export const EditProfilePage: React.FC = () => {
@@ -31,12 +30,8 @@ export const EditProfilePage: React.FC = () => {
             },
           }
         );
-
-        const userData = response.data.find(
-          (data: User) => data._id === userId
-        );
+        const userData = response.data
         setProfilePhoto(`${HOST_NAME}/${userData.profilePhoto}`);
-
         setValue("name", userData.name);
       } catch (error) {
         console.error(error);
@@ -48,7 +43,7 @@ export const EditProfilePage: React.FC = () => {
 
   const onSubmit = async (data: EditProfile) => {
     const formData = new FormData();
-
+    
     formData.append("name", data.name);
     if (data.profilePhoto?.[0]) {
       formData.append("profilePhoto", data.profilePhoto[0]);
